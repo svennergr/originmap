@@ -14,8 +14,16 @@ func main() {
 	flag.StringVar(&outdir, "o", "out", "outdir")
 	flag.Parse()
 
-	reader := bufio.NewReader(os.Stdin)
-	sourcemap, _ := reader.ReadString('\n')
+	sourcemap := ""
+
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		sourcemap += scanner.Text()
+	}
+
+	if scanner.Err() != nil {
+		panic(scanner.Err())
+	}
 
 	rawSources := gjson.Get(sourcemap, "sources").Array()
 	rawSourceContents := gjson.Get(sourcemap, "sourcesContent").Array()
