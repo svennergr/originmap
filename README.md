@@ -3,7 +3,7 @@
 ## Install
 
 ```
-go install github.com/svennergr/originmap
+go install github.com/svennergr/originmap@latest
 ```
 
 ## Usage
