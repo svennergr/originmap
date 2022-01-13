@@ -19,6 +19,8 @@ func main() {
 	sourcemap := ""
 
 	scanner := bufio.NewScanner(os.Stdin)
+	buf := make([]byte, 0, 64*1024)
+	scanner.Buffer(buf, 1024*1024)
 	for scanner.Scan() {
 		sourcemap += scanner.Text()
 	}
