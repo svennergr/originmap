@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"flag"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/tidwall/gjson"
 )
@@ -29,14 +31,15 @@ func main() {
 	rawSourceContents := gjson.Get(sourcemap, "sourcesContent").Array()
 
 	for index, source := range rawSources {
-		if source.String()[0] != '.' {
-			// this is a local file and should be written to the output
-			ensureDir(filepath.Dir(outdir + source.String()))
-			err := os.WriteFile(outdir+source.String(), []byte(rawSourceContents[index].String()), 0644)
-			if err != nil {
-				panic(err)
-			}
+		sourcePath := path.Join(outdir, strings.Replace(source.String(), "webpack://", "", -1))
+		// if source.String()[0] != '.' {
+		// this is a local file and should be written to the output
+		ensureDir(filepath.Dir(sourcePath))
+		err := os.WriteFile(sourcePath, []byte(rawSourceContents[index].String()), 0644)
+		if err != nil {
+			panic(err)
 		}
+		// }
 	}
 }
 
@@ -46,7 +49,10 @@ func ensureDir(path string) {
 		panic(err)
 	}
 	if !direxists {
-		os.MkdirAll(path, 0777)
+		err = os.MkdirAll(path, 0777)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
