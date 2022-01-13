@@ -32,8 +32,9 @@ func main() {
 	rawSources := gjson.Get(sourcemap, "sources").Array()
 	rawSourceContents := gjson.Get(sourcemap, "sourcesContent").Array()
 
+	replacer := strings.NewReplacer("../", "", "webpack://", "")
 	for index, source := range rawSources {
-		sourcePath := path.Join(outdir, strings.Replace(source.String(), "webpack://", "", -1))
+		sourcePath := path.Join(outdir, replacer.Replace(source.String()))
 		// if source.String()[0] != '.' {
 		// this is a local file and should be written to the output
 		ensureDir(filepath.Dir(sourcePath))
